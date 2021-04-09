@@ -1,0 +1,7 @@
+devid=wilkinsondarolt
+devtitle=Wilkinson Da Rolt de Souza
+gameid=1jam-button
+gametitle=1Jam Button
+version=0.1
+icon=metadata/icon.png
+compile_ruby=false
