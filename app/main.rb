@@ -1,4 +1,12 @@
+require 'app/sprite/parallax.rb'
+require 'app/sprite/static.rb'
+
 def tick(args)
+  args.outputs.sprites << Sprite::Parallax.render(args.state.tick_count, 'sprites/background/sky.png', -0.75)
+  args.outputs.sprites << Sprite::Static.render(420, 340, 463, 320, 'sprites/background/lighthouse.png')
+  args.outputs.sprites << Sprite::Parallax.render(args.state.tick_count, 'sprites/background/ocean_back.png', -1.00, -65)
+  args.outputs.sprites << Sprite::Parallax.render(args.state.tick_count, 'sprites/background/ocean_front.png', -1.50, -65)
+
   args.state.mouse_tick ||= 0
   args.state.idle_time ||= 0
   args.state.morse_signals ||= []
@@ -47,51 +55,50 @@ def tick(args)
   end
 end
 
+MORSE_CODE_DOT_SYMBOL = '.'.freeze
+MORSE_CODE_SLASH_SYMBOL = '-'.freeze
+
 def input_time_to_morse_code(input_time)
   seconds = ticks_to_seconds(input_time)
 
   return '' if seconds.zero?
 
-  if seconds <= 0.13
-    '.'
-  else
-    '-'
-  end
+  seconds <= 0.13 ? MORSE_CODE_DOT_SYMBOL : MORSE_CODE_SLASH_SYMBOL
 end
 
 def ticks_to_seconds(tick_count)
   tick_count / 60
 end
 
-def morse_to_alphabet(morse)
-  morse_code_alphabet = {
-    '.-' => 'A',
-    '-...' => 'B',
-    '-.-.' => 'C',
-    '-..' => 'D',
-    '.' => 'E',
-    '..-.' => 'F',
-    '--.' => 'G',
-    '....' => 'H',
-    '..' => 'I',
-    '.---' => 'J',
-    '-.-' => 'K',
-    '.-..' => 'L',
-    '--' => 'M',
-    '-.' => 'N',
-    '---' => 'O',
-    '.--.' => 'P',
-    '--.-' => 'Q',
-    '.-.' => 'R',
-    '...' => 'S',
-    '-' => 'T',
-    '..-' => 'U',
-    '...-' => 'V',
-    '.--' => 'W',
-    '-..-' => 'X',
-    '-.--' => 'Y',
-    '--..' => 'Z'
-  }
+MORSE_CODE_ALPHABET = {
+  '.-' => 'A',
+  '-...' => 'B',
+  '-.-.' => 'C',
+  '-..' => 'D',
+  '.' => 'E',
+  '..-.' => 'F',
+  '--.' => 'G',
+  '....' => 'H',
+  '..' => 'I',
+  '.---' => 'J',
+  '-.-' => 'K',
+  '.-..' => 'L',
+  '--' => 'M',
+  '-.' => 'N',
+  '---' => 'O',
+  '.--.' => 'P',
+  '--.-' => 'Q',
+  '.-.' => 'R',
+  '...' => 'S',
+  '-' => 'T',
+  '..-' => 'U',
+  '...-' => 'V',
+  '.--' => 'W',
+  '-..-' => 'X',
+  '-.--' => 'Y',
+  '--..' => 'Z'
+}.freeze
 
-  morse_code_alphabet[morse] || ''
+def morse_to_alphabet(morse)
+  MORSE_CODE_ALPHABET[morse] || ''
 end
