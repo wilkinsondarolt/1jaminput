@@ -14,8 +14,8 @@ module Scene
       args.outputs.sprites << Sprite::Static.render(
         x: 420,
         y: 340,
-        w: 463,
-        h: 320,
+        w: 500,
+        h: 380,
         path: 'sprites/background/lighthouse.png'
       )
 
@@ -39,8 +39,10 @@ module Scene
         hold_for: 20,
         x: 100,
         y: 100,
-        w: 269,
-        h: 179,
+        source_w: 269,
+        source_h: 179,
+        w: 200,
+        h: 130,
         path: 'sprites/boat/boat_spritesheet.png'
       )
 
@@ -50,6 +52,14 @@ module Scene
       args.state.letters ||= []
 
       if args.inputs.mouse.button_left
+        args.outputs.sprites << Sprite::Static.render(
+          x: 0,
+          y: args.grid.h - 340,
+          w: 1400,
+          h: 360,
+          path: 'sprites/light/light.png'
+        )
+
         args.state.mouse_tick += 1
         args.state.idle_time = 0
       else

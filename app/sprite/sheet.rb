@@ -3,6 +3,8 @@ module Sprite
     def self.render(opts)
       height = opts[:h]
       width = opts[:w]
+      source_w = opts[:source_w]
+      source_h = opts[:source_h]
       sprite_index = 0.frame_index(
         count: opts[:count],
         hold_for: opts[:hold_for] || 1,
@@ -13,12 +15,12 @@ module Sprite
         x: opts[:x],
         y: opts[:y],
         w: width,
-        h: width,
+        h: height,
         path: opts[:path],
-        source_x: width * sprite_index,
+        source_x: source_w * sprite_index,
         source_y: 0,
-        source_w: width,
-        source_h: height
+        source_w: source_w,
+        source_h: source_h
       }
     end
   end
