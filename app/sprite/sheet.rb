@@ -3,7 +3,11 @@ module Sprite
     def self.render(opts)
       height = opts[:h]
       width = opts[:w]
-      sprite_index = opts[:tick].frame_index(count: 4, hold_for: 1, repeat: true)
+      sprite_index = 0.frame_index(
+        count: opts[:count],
+        hold_for: opts[:hold_for] || 1,
+        repeat: true
+      )
 
       {
         x: opts[:x],

@@ -1,11 +1,46 @@
 require 'app/sprite/parallax.rb'
 require 'app/sprite/static.rb'
+require 'app/sprite/sheet.rb'
 
 def tick(args)
-  args.outputs.sprites << Sprite::Parallax.render(args.state.tick_count, 'sprites/background/sky.png', -0.75)
-  args.outputs.sprites << Sprite::Static.render(420, 340, 463, 320, 'sprites/background/lighthouse.png')
-  args.outputs.sprites << Sprite::Parallax.render(args.state.tick_count, 'sprites/background/ocean_back.png', -1.00, -65)
-  args.outputs.sprites << Sprite::Parallax.render(args.state.tick_count, 'sprites/background/ocean_front.png', -1.50, -65)
+  args.outputs.sprites << Sprite::Parallax.render(
+    tick: args.state.tick_count,
+    path: 'sprites/background/sky.png',
+    rate: -0.75
+  )
+
+  args.outputs.sprites << Sprite::Static.render(
+    x: 420,
+    y: 340,
+    w: 463,
+    h: 320,
+    path: 'sprites/background/lighthouse.png'
+  )
+
+  args.outputs.sprites << Sprite::Parallax.render(
+    tick: args.state.tick_count,
+    path: 'sprites/background/ocean_back.png',
+    rate: -1.00,
+    y: -65
+  )
+
+  args.outputs.sprites << Sprite::Parallax.render(
+    tick: args.state.tick_count,
+    path: 'sprites/background/ocean_front.png',
+    rate: -1.50,
+    y: -65
+  )
+
+  args.outputs.sprites << Sprite::Sheet.render(
+    tick: args.state.tick_count,
+    count: 4,
+    hold_for: 20,
+    x: 100,
+    y: -150,
+    w: 555,
+    h: 321,
+    path: 'sprites/boat/boat_spritesheet.png'
+  )
 
   args.state.mouse_tick ||= 0
   args.state.idle_time ||= 0
