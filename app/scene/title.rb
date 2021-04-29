@@ -20,7 +20,7 @@ module Scene
         path: 'sprites/title/title.png'
       )
 
-      start_game(args) if args.inputs.mouse.button_left
+      start_game(args) if args.inputs.mouse.click
     end
 
     private
