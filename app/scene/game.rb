@@ -38,9 +38,9 @@ module Scene
         count: 4,
         hold_for: 20,
         x: 100,
-        y: -150,
-        w: 555,
-        h: 321,
+        y: 100,
+        w: 269,
+        h: 179,
         path: 'sprites/boat/boat_spritesheet.png'
       )
 
