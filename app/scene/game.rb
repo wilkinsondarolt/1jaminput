@@ -14,6 +14,9 @@ module Scene
       args.state.letters ||= []
       args.state.stones ||= []
       args.state.player_lane ||= 2
+      args.state.difficulty_multiplier = difficulty_multiplier(args.state.tick_count)
+
+      args.outputs.debug << [120, 100, "Dificuldade: #{args.state.difficulty_multiplier}", 1, 1].label
 
       draw_player(args)
 
@@ -116,8 +119,16 @@ module Scene
       end
     end
 
+    def difficulty_multiplier(tick_count)
+      (1 + 0.2.*(ticks_to_minutes(tick_count))).round(1)
+    end
+
     def ticks_to_seconds(tick_count)
       tick_count / 60
+    end
+
+    def ticks_to_minutes(tick_count)
+      tick_count / 3_600
     end
 
     def draw_background(args)
