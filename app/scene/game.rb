@@ -7,13 +7,15 @@ module Scene
   class Game
     def tick(args)
       draw_background(args)
-      draw_player(args)
 
       args.state.mouse_tick ||= 0
       args.state.idle_time ||= 0
       args.state.morse_signals ||= []
       args.state.letters ||= []
       args.state.stones ||= []
+      args.state.player_lane ||= 2
+
+      draw_player(args)
 
       if args.inputs.mouse.button_left
         draw_lighthouse_light(args)
@@ -59,6 +61,9 @@ module Scene
       end
 
       generate_stone(args) if create_stone?
+
+      clear_unused_stones(args)
+      update_stones(args)
       draw_stones(args)
     end
 
@@ -84,17 +89,36 @@ module Scene
       random(1, 100) < STONE_SPAWN_RATIO
     end
 
-    def draw_stones(args)
+    def clear_unused_stones(args)
+      args.state.stones = args.state.stones.reject do |stone|
+        stone[:x] < -300
+      end
+    end
+
+    def update_stones(args)
       args.state.stones.each do |stone|
         stone[:x] -= 3
+        stone[:y] = 100.*(stone[:lane] - 1)
+        stone[:collision_box] = stone_collision_box = {
+          x: stone[:x],
+          y: stone[:y] + 60,
+          w: 200,
+          h: 60
+        }
+      end
+    end
 
+    def draw_stones(args)
+      args.state.stones.each do |stone|
         args.outputs.sprites << Sprite::Static.render(
           x: stone[:x],
-          y: 100.*(stone[:lane]-1),
+          y: stone[:y],
           w: 200,
           h: 130,
           path: "sprites/stone/stone#{stone[:sprite_index]}.png"
         )
+
+        args.outputs.debug << stone[:collision_box].border
       end
     end
 
@@ -138,13 +162,22 @@ module Scene
         count: 4,
         hold_for: 20,
         x: 100,
-        y: 100,
-        source_w: 269,
-        source_h: 179,
+        y: 130.*(args.state.player_lane - 1),
+        source_w: 299,
+        source_h: 189,
         w: 200,
         h: 130,
         path: 'sprites/boat/boat_spritesheet.png'
       )
+
+      args.state.player.collision_box = {
+        x: 120,
+        y: 150.*(args.state.player_lane - 1),
+        h: 50,
+        w: 160
+      }
+
+      args.outputs.debug << args.state.player.collision_box.border
     end
 
     def draw_lighthouse_light(args)
