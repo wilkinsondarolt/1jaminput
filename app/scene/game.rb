@@ -41,8 +41,6 @@ module Scene
         args.outputs.labels << [x_position, y_position, letter, 5, 1]
       end
 
-      args.outputs.labels << [640, 420, input_kind, 5, 1]
-
       if ticks_to_seconds(args.state.idle_time) >= 0.5 && args.state.morse_signals.size >= 1
         morse_code_letter = args.state.morse_signals.join('')
         alphabet_letter = MorseCode.morse_to_alphabet(morse_code_letter)
@@ -182,7 +180,7 @@ module Scene
 
     def draw_lighthouse_light(args)
       args.outputs.sprites << Sprite::Static.render(
-        x: 0,
+        x: -15,
         y: args.grid.h - 340,
         w: 1400,
         h: 360,
