@@ -27,25 +27,21 @@ module Scene
 
       input_kind = MorseCode.input_time_to_morse_code(args.state.mouse_tick)
 
-      args.state.morse_signals.each_with_index do |code, index|
-        x_position = 50 + (80 * index)
-        y_position = 50
-
-        args.outputs.labels << [x_position, y_position, code, 5, 1]
-      end
-
-      args.state.letters.each_with_index do |letter, index|
-        x_position = 100 + (80 * index)
-        y_position = 100
-
-        args.outputs.labels << [x_position, y_position, letter, 5, 1]
-      end
+      draw_morse_signals(args)
 
       if ticks_to_seconds(args.state.idle_time) >= 0.5 && args.state.morse_signals.size >= 1
         morse_code_letter = args.state.morse_signals.join('')
         alphabet_letter = MorseCode.morse_to_alphabet(morse_code_letter)
 
-        args.state.letters << alphabet_letter unless alphabet_letter.empty?
+        directions = {
+          'N' => 1,
+          'S' => -1
+        }
+        direction = directions[alphabet_letter] || 0
+
+        args.state.player_lane += direction
+        args.state.player_lane = 3 if args.state.player_lane > 3
+        args.state.player_lane = 1 if args.state.player_lane <= 0
         args.state.morse_signals = []
       end
 
@@ -74,7 +70,7 @@ module Scene
     def generate_stone(args)
       stone = {
         sprite_index: random(1, 3),
-        lane: random(1, 4),
+        lane: random(1, 3),
         x: args.grid.w
       }
 
@@ -132,7 +128,7 @@ module Scene
       )
 
       args.outputs.sprites << Sprite::Static.render(
-        x: 420,
+        x: 400,
         y: 340,
         w: 500,
         h: 380,
@@ -152,15 +148,24 @@ module Scene
         rate: -1.50,
         y: -65
       )
+
+      args.outputs.debug << {
+        x: (args.grid.w / 2),
+        y: 0,
+        x2: (args.grid.w / 2),
+        y2: args.grid.h
+      }
     end
 
     def draw_player(args)
+      y = 50 + 100.*(args.state.player_lane - 1)
+
       args.outputs.sprites << Sprite::Sheet.render(
         tick: args.state.tick_count,
         count: 4,
         hold_for: 20,
         x: 100,
-        y: 130.*(args.state.player_lane - 1),
+        y: y,
         source_w: 299,
         source_h: 189,
         w: 200,
@@ -170,7 +175,7 @@ module Scene
 
       args.state.player.collision_box = {
         x: 120,
-        y: 150.*(args.state.player_lane - 1),
+        y: y + 20,
         h: 50,
         w: 160
       }
@@ -180,12 +185,40 @@ module Scene
 
     def draw_lighthouse_light(args)
       args.outputs.sprites << Sprite::Static.render(
-        x: -15,
+        x: -35,
         y: args.grid.h - 340,
         w: 1400,
         h: 360,
         path: 'sprites/light/light.png'
       )
+    end
+
+    def draw_morse_signals(args)
+      screen_center = args.grid.w / 2
+      signal_count = args.state.morse_signals.size
+      x = screen_center - (100.*(signal_count) / 2)
+
+      args.state.morse_signals.each do |signal|
+        if signal == MorseCode::DOT_SYMBOL
+          args.outputs.sprites << Sprite::Static.render(
+            x: x,
+            y: 0,
+            w: 50,
+            h: 50,
+            path: 'sprites/morse/dot.png'
+          )
+          x += 100
+        else
+          args.outputs.sprites << Sprite::Static.render(
+            x: x,
+            y: 0,
+            w: 100,
+            h: 50,
+            path: 'sprites/morse/slash.png'
+          )
+          x += 150
+        end
+      end
     end
   end
 end
