@@ -4,19 +4,39 @@ require 'app/scene/game.rb'
 module Scene
   class Title
     def tick(args)
+      args.outputs.sprites << Sprite::Parallax.render(
+        tick: args.state.tick_count,
+        path: 'sprites/background/sky.png',
+        rate: -0.75
+      )
+
       args.outputs.sprites << Sprite::Static.render(
-        x: 0,
-        y: 0,
-        w: args.grid.w,
-        h: args.grid.h,
-        path: 'sprites/title/background.png'
+        x: 400,
+        y: 340,
+        w: 500,
+        h: 380,
+        path: 'sprites/background/lighthouse.png'
+      )
+
+      args.outputs.sprites << Sprite::Parallax.render(
+        tick: args.state.tick_count,
+        path: 'sprites/background/ocean_back.png',
+        rate: -1.00,
+        y: -65
+      )
+
+      args.outputs.sprites << Sprite::Parallax.render(
+        tick: args.state.tick_count,
+        path: 'sprites/background/ocean_front.png',
+        rate: -1.50,
+        y: -65
       )
 
       args.outputs.sprites << Sprite::Static.render(
         x: 0,
-        y: 50,
+        y: 100,
         w: args.grid.w,
-        h: 389,
+        h: 500,
         path: 'sprites/title/title.png'
       )
 
