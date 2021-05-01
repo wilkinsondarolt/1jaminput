@@ -7,16 +7,20 @@ require 'app/scene/credits.rb'
 module Scene
   class Game
     def tick(args)
+      reset_variables(args) if args.state.mouse_tick.nil?
+
       draw_background(args)
 
-      reset_variables(args) if args.state.mouse_tick.nil?
-      args.state.difficulty_multiplier = difficulty_multiplier(args.state.tick_count)
+      args.state.game_tick += 1
+      args.state.difficulty_multiplier = difficulty_multiplier(args.state.game_tick)
 
       args.outputs.debug << [120, 100, "Dificuldade: #{args.state.difficulty_multiplier}", 1, 1].label
 
       draw_player(args)
 
-      if args.inputs.mouse.button_left
+      args.state.mouse_down_in_game =  args.state.mouse_down_in_game || args.inputs.mouse.down
+
+      if args.state.mouse_down_in_game && args.inputs.mouse.button_left
         draw_lighthouse_light(args)
         args.state.mouse_tick += 1
         args.state.idle_time = 0
@@ -28,25 +32,9 @@ module Scene
 
       draw_morse_signals(args)
 
-      if ticks_to_seconds(args.state.idle_time) >= 0.5 && args.state.morse_signals.size >= 1
-        morse_code_letter = args.state.morse_signals.join('')
-        alphabet_letter = MorseCode.morse_to_alphabet(morse_code_letter)
+      submit_input = ticks_to_seconds(args.state.idle_time) >= 0.5 && args.state.morse_signals.size >= 1
 
-        directions = {
-          'N' => 1,
-          'S' => -1
-        }
-        direction = directions[alphabet_letter] || 0
-
-        args.state.player_lane += direction
-        args.state.player_lane = 3 if args.state.player_lane > 3
-        args.state.player_lane = 1 if args.state.player_lane <= 0
-        args.state.morse_signals = []
-      end
-
-      if ticks_to_seconds(args.state.idle_time) >= 1.5 && args.state.letters.size >= 1
-        args.state.letters = []
-      end
+      move_player(args) if submit_input
 
       if args.inputs.mouse.up
         args.state.morse_signals << input_kind
@@ -63,6 +51,19 @@ module Scene
     end
 
     private
+
+    def move_player(args)
+      morse_code_letter = args.state.morse_signals.join('')
+      alphabet_letter = MorseCode.morse_to_alphabet(morse_code_letter)
+
+      directions = { 'N' => 1, 'S' => -1 }
+      direction = directions[alphabet_letter] || 0
+
+      args.state.player_lane += direction
+      args.state.player_lane = 3 if args.state.player_lane > 3
+      args.state.player_lane = 1 if args.state.player_lane <= 0
+      args.state.morse_signals = []
+    end
 
     def random(min, max)
       [*min..max].sample
@@ -111,11 +112,13 @@ module Scene
     end
 
     def reset_variables(args)
+      args.state.game_tick = 0
       args.state.mouse_tick = 0
       args.state.idle_time = 0
       args.state.morse_signals = []
       args.state.stones = []
       args.state.player_lane = 2
+      args.state.mouse_down_in_game = false
     end
 
     def end_game(args)
