@@ -27,9 +27,6 @@ module Scene
       args.state.difficulty_multiplier = difficulty_multiplier(args.state.game_tick)
 
       args.outputs.debug << [120, 100, "Dificuldade: #{args.state.difficulty_multiplier}", 1, 1].label
-
-      draw_player(args)
-
       args.state.mouse_down_in_game =  args.state.mouse_down_in_game || args.inputs.mouse.down
 
       if args.state.mouse_down_in_game && args.inputs.mouse.button_left
@@ -58,6 +55,7 @@ module Scene
       clear_unused_stones(args)
       update_stones(args)
       draw_stones(args)
+      draw_player(args)
 
       end_game(args) if player_collinding_with_stone?(args)
     end
@@ -134,7 +132,7 @@ module Scene
         x: 10,
         y: args.grid.h - 5,
         size_enum: 15,
-        text: "Score: #{args.state.score}",
+        text: "Pontuação: #{args.state.score}",
         r: 255,
         g: 255,
         b: 255,
@@ -154,8 +152,6 @@ module Scene
     end
 
     def end_game(args)
-      reset_variables(args)
-
       args.state.scene = Scene::Credits.new(args)
     end
 
