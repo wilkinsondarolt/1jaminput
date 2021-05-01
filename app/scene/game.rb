@@ -96,12 +96,13 @@ module Scene
       args.state.stones.each do |stone|
         stone[:x] -= 3
         stone[:y] = 100.*(stone[:lane] - 1)
-        stone[:collision_box] = stone_collision_box = {
+        stone_collision_box = {
           x: stone[:x],
           y: stone[:y] + 60,
           w: 200,
           h: 60
         }
+        stone[:collision_box] = stone_collision_box
       end
     end
 
