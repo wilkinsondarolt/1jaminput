@@ -2,18 +2,14 @@ require 'app/sprite/parallax.rb'
 require 'app/sprite/static.rb'
 require 'app/sprite/sheet.rb'
 require 'app/morse_code.rb'
+require 'app/scene/credits.rb'
 
 module Scene
   class Game
     def tick(args)
       draw_background(args)
 
-      args.state.mouse_tick ||= 0
-      args.state.idle_time ||= 0
-      args.state.morse_signals ||= []
-      args.state.letters ||= []
-      args.state.stones ||= []
-      args.state.player_lane ||= 2
+      reset_variables(args) if args.state.mouse_tick.nil?
       args.state.difficulty_multiplier = difficulty_multiplier(args.state.tick_count)
 
       args.outputs.debug << [120, 100, "Dificuldade: #{args.state.difficulty_multiplier}", 1, 1].label
@@ -62,6 +58,8 @@ module Scene
       clear_unused_stones(args)
       update_stones(args)
       draw_stones(args)
+
+      end_game(args) if player_collinding_with_stone?(args)
     end
 
     private
@@ -104,6 +102,26 @@ module Scene
         }
         stone[:collision_box] = stone_collision_box
       end
+    end
+
+    def player_collinding_with_stone?(args)
+      args.state.stones.find do |stone|
+        args.state.player.collision_box.intersect_rect?(stone[:collision_box])
+      end
+    end
+
+    def reset_variables(args)
+      args.state.mouse_tick = 0
+      args.state.idle_time = 0
+      args.state.morse_signals = []
+      args.state.stones = []
+      args.state.player_lane = 2
+    end
+
+    def end_game(args)
+      reset_variables(args)
+
+      args.state.scene = Scene::Credits.new
     end
 
     def draw_stones(args)
