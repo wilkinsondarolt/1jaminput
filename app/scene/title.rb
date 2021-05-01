@@ -6,7 +6,6 @@ module Scene
     def initialize(args, restart)
       return if restart
 
-      args.audio = {}
       args.audio[:music] = {
         input: 'sounds/music_title.ogg',
         x: 0.0,

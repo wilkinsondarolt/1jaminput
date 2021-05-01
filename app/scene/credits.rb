@@ -4,7 +4,6 @@ require 'app/scene/title.rb'
 module Scene
   class Credits
     def initialize(args)
-      args.audio = {}
       args.audio[:music] = {
         input: 'sounds/music_title.ogg',
         x: 0.0,

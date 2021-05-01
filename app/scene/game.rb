@@ -9,7 +9,6 @@ module Scene
     def initialize(args)
       reset_variables(args)
 
-      args.audio = {}
       args.audio[:music] = {
         input: 'sounds/music_gameplay.ogg',
         x: 0.0,
