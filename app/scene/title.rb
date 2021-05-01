@@ -3,6 +3,12 @@ require 'app/scene/game.rb'
 
 module Scene
   class Title
+    def initialize(args, restart)
+      return if restart
+
+      args.outputs.sounds << 'sounds/music_title.ogg'
+    end
+
     def tick(args)
       args.outputs.sprites << Sprite::Parallax.render(
         tick: args.state.tick_count,
@@ -46,7 +52,7 @@ module Scene
     private
 
     def start_game(args)
-      args.state.scene = Scene::Game.new
+      args.state.scene = Scene::Game.new(args)
     end
   end
 end

@@ -3,6 +3,11 @@ require 'app/scene/title.rb'
 
 module Scene
   class Credits
+    def initialize(args)
+      args.gtk.stop_music
+      args.outputs.sounds << 'sounds/music_title.ogg'
+    end
+
     def tick(args)
       args.outputs.sprites << Sprite::Static.render(
         x: 0,
@@ -18,7 +23,7 @@ module Scene
     private
 
     def show_title(args)
-      args.state.scene = Scene::Title.new
+      args.state.scene = Scene::Title.new(args, true)
     end
   end
 end

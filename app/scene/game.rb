@@ -6,9 +6,14 @@ require 'app/scene/credits.rb'
 
 module Scene
   class Game
-    def tick(args)
-      reset_variables(args) if args.state.mouse_tick.nil?
+    def initialize(args)
+      reset_variables(args)
 
+      args.gtk.stop_music
+      args.outputs.sounds << 'sounds/music_gameplay.ogg'
+    end
+
+    def tick(args)
       draw_background(args)
 
       args.state.game_tick += 1
@@ -124,7 +129,7 @@ module Scene
     def end_game(args)
       reset_variables(args)
 
-      args.state.scene = Scene::Credits.new
+      args.state.scene = Scene::Credits.new(args)
     end
 
     def draw_stones(args)
