@@ -4,8 +4,15 @@ require 'app/scene/title.rb'
 module Scene
   class Credits
     def initialize(args)
-      args.gtk.stop_music
-      args.outputs.sounds << 'sounds/music_title.ogg'
+      args.audio = {}
+      args.audio[:music] = {
+        input: 'sounds/music_title.ogg',
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        paused: false,
+        looping: true
+      }
     end
 
     def tick(args)

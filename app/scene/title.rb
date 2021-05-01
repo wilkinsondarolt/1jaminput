@@ -6,7 +6,15 @@ module Scene
     def initialize(args, restart)
       return if restart
 
-      args.outputs.sounds << 'sounds/music_title.ogg'
+      args.audio = {}
+      args.audio[:music] = {
+        input: 'sounds/music_title.ogg',
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        paused: false,
+        looping: true
+      }
     end
 
     def tick(args)

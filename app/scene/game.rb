@@ -9,8 +9,15 @@ module Scene
     def initialize(args)
       reset_variables(args)
 
-      args.gtk.stop_music
-      args.outputs.sounds << 'sounds/music_gameplay.ogg'
+      args.audio = {}
+      args.audio[:music] = {
+        input: 'sounds/music_gameplay.ogg',
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        paused: false,
+        looping: true
+      }
     end
 
     def tick(args)
