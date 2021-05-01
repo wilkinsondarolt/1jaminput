@@ -21,6 +21,7 @@ module Scene
 
     def tick(args)
       draw_background(args)
+      draw_score(args)
 
       args.state.game_tick += 1
       args.state.difficulty_multiplier = difficulty_multiplier(args.state.game_tick)
@@ -97,9 +98,15 @@ module Scene
     end
 
     def clear_unused_stones(args)
+      stone_count = args.state.stones.count
+
       args.state.stones = args.state.stones.reject do |stone|
         stone[:x] < -300
       end
+
+      removed_stones = stone_count - args.state.stones.count
+
+      args.state.score += 100.*(removed_stones)
     end
 
     def update_stones(args)
@@ -122,6 +129,19 @@ module Scene
       end
     end
 
+    def draw_score(args)
+      args.outputs.labels << {
+        x: 10,
+        y: args.grid.h - 5,
+        size_enum: 15,
+        text: "Score: #{args.state.score}",
+        r: 255,
+        g: 255,
+        b: 255,
+        font: 'fonts/CaveatBrush-Regular.ttf'
+      }
+    end
+
     def reset_variables(args)
       args.state.game_tick = 0
       args.state.mouse_tick = 0
@@ -130,6 +150,7 @@ module Scene
       args.state.stones = []
       args.state.player_lane = 2
       args.state.mouse_down_in_game = false
+      args.state.score = 0
     end
 
     def end_game(args)
