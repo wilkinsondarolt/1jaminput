@@ -17,6 +17,15 @@ module Scene
         paused: false,
         looping: true
       }
+
+      args.audio[:music_sea] = {
+        input: 'sounds/music_gameplay_sea.ogg',
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        paused: false,
+        looping: true
+      }
     end
 
     def tick(args)
@@ -47,6 +56,8 @@ module Scene
 
       if args.inputs.mouse.up
         args.state.morse_signals << input_kind
+        play_morse_code_sound(args, input_kind)
+
         args.state.mouse_tick = 0
       end
 
@@ -55,12 +66,20 @@ module Scene
       clear_unused_stones(args)
       update_stones(args)
       draw_stones(args)
+
       draw_player(args)
+      play_player_horn(args)
 
       end_game(args) if player_collinding_with_stone?(args)
     end
 
     private
+
+    def play_morse_code_sound(args, morse_code_symbol)
+      morse_code_sound = morse_code_symbol == MorseCode::DOT_SYMBOL ? 'dot' : 'slash'
+
+      args.gtk.queue_sound("sounds/sfx_morse_code_#{morse_code_sound}.ogg")
+    end
 
     def move_player(args)
       morse_code_letter = args.state.morse_signals.join('')
@@ -127,6 +146,16 @@ module Scene
       end
     end
 
+    def play_player_horn(args)
+      return unless (args.state.game_tick % 3_600).zero?
+
+      args.gtk.queue_sound('sounds/sfx_player_horn.ogg')
+    end
+
+    def play_player_death(args)
+      args.gtk.queue_sound('sounds/sfx_player_death.ogg')
+    end
+
     def draw_score(args)
       args.outputs.labels << {
         x: 10,
@@ -152,20 +181,21 @@ module Scene
     end
 
     def end_game(args)
+      play_player_death(args)
+
       args.state.scene = Scene::Credits.new(args)
     end
 
     def draw_stones(args)
-      args.state.stones.each do |stone|
-        args.outputs.sprites << Sprite::Static.render(
+
+      args.outputs.sprites << args.state.stones.map do |stone|
+         Sprite::Static.render(
           x: stone[:x],
           y: stone[:y],
           w: 200,
           h: 130,
           path: "sprites/stone/stone#{stone[:sprite_index]}.png"
         )
-
-        args.outputs.debug << stone[:collision_box].border
       end
     end
 

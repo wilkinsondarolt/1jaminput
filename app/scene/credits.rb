@@ -12,6 +12,8 @@ module Scene
         paused: false,
         looping: true
       }
+
+      args.audio[:music_sea][:paused] = true
     end
 
     def tick(args)
