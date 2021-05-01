@@ -1,7 +1,7 @@
 devid=wilkinsondarolt
-devtitle=Wilkinson Da Rolt de Souza
+devtitle=Wilkinson
 gameid=sos
-gametitle=1Jam Button
-version=0.1
+gametitle=... --- ...
+version=1.0
 icon=metadata/icon.png
 compile_ruby=false
